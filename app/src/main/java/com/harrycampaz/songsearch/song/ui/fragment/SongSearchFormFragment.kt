@@ -43,7 +43,7 @@ class SongSearchFormFragment : Fragment() {
                     if(query.length > 1){
                        btn_query.setOnClickListener {
                            et_query.text = null
-                           val bundle = bundleOf("query" to query)
+                           val bundle = bundleOf("query" to query.toString())
                            Navigation.findNavController(it).navigate(R.id.action_songSearchFormFragment_to_songListFragment, bundle)
                        }
                     }else {

@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 
 import com.harrycampaz.songsearch.R
 import  com.harrycampaz.songsearch.song.domain.model.Result
+import com.harrycampaz.songsearch.song.domain.model.SongListener
 import com.harrycampaz.songsearch.song.ui.holder.SongViewHolder
 
-class SongAdapter : PagedListAdapter<Result, SongViewHolder>(DiffUtilCallBack()) {
+class SongAdapter(val songListener: SongListener) : PagedListAdapter<Result, SongViewHolder>(DiffUtilCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -24,7 +25,7 @@ class SongAdapter : PagedListAdapter<Result, SongViewHolder>(DiffUtilCallBack())
         val song = getItem(position)
 
         song?.let {
-            holder.bind(song)
+            holder.bind(song, songListener, position)
         }
     }
 

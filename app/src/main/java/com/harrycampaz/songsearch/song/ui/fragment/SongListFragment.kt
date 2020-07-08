@@ -6,19 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.harrycampaz.songsearch.R
+import com.harrycampaz.songsearch.song.domain.model.Result
+import com.harrycampaz.songsearch.song.domain.model.SongListener
 import com.harrycampaz.songsearch.song.domain.viewmodel.SongListViewModel
 import com.harrycampaz.songsearch.song.ui.adapter.SongAdapter
 import kotlinx.android.synthetic.main.fragment_song_list.*
 import kotlin.math.log
 
 private const val TAG = "SongListFragment"
-class SongListFragment : Fragment() {
+class SongListFragment : Fragment(), SongListener {
 
     lateinit var adapter: SongAdapter
 
@@ -43,7 +47,7 @@ class SongListFragment : Fragment() {
     }
 
     private fun showScreen(query: String) {
-        adapter = SongAdapter()
+        adapter = SongAdapter(this)
         shimmer_view_container.startShimmer()
 
         rv_song.layoutManager = LinearLayoutManager(context)
@@ -75,6 +79,11 @@ class SongListFragment : Fragment() {
         })
 
         rv_song.adapter = adapter
+    }
+
+    override fun onSongClicked(song: Result, position: Int) {
+        val bundle = bundleOf("song" to song)
+        findNavController().navigate(R.id.songDetailDialogFragment, bundle)
     }
 
 }

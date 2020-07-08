@@ -1,33 +1,31 @@
 package com.harrycampaz.songsearch.song.ui.fragment
 
+import android.graphics.Color
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.harrycampaz.songsearch.R
+import com.harrycampaz.songsearch.song.domain.model.Result
+import kotlinx.android.synthetic.main.fragment_song_detail_dialog.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "SongDetailDialogFragmen"
+class SongDetailDialogFragment : DialogFragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SongDetailDialogFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SongDetailDialogFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
     override fun onCreateView(
@@ -38,23 +36,66 @@ class SongDetailDialogFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_song_detail_dialog, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SongDetailDialogFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SongDetailDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar_song_dialog.navigationIcon = ContextCompat.getDrawable(view.context, R.drawable.ic_baseline_close_24)
+
+        toolbar_song_dialog.setTitleTextColor(Color.BLACK)
+        val song = arguments?.getSerializable("song") as Result
+
+         mediaPlayer = MediaPlayer().apply {
+            setAudioStreamType(AudioManager.STREAM_MUSIC)
+            setDataSource(song.previewUrl)
+            prepare() // might take long! (for buffering, etc)
+        }
+
+        toolbar_song_dialog.setNavigationOnClickListener {
+            dismiss()
+            mediaPlayer?.pause()
+        }
+
+        Glide.with(view.context)
+            .load(song.artworkUrl100)
+            .into(iv_detail_dialog_image)
+
+        toolbar_song_dialog.title = song.trackName
+        song.collectionName?.let {
+            tv_details_dialog_name.text = it
+        }
+        tv_details_dialog_banda.text = song.artistName
+
+        mediaPlayer?.let { media ->
+
+
+            iv_play.setOnClickListener {
+
+                if(media.isPlaying){
+                    media.pause()
+                    iv_
+                }else {
+                    media.start()
                 }
+
             }
+
+        }
+
+
     }
+
+
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer?.let {
+         it.pause()
+        }
+    }
+
+
 }

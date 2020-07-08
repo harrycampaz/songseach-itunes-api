@@ -17,5 +17,14 @@
         android:id="@+id/songListFragment"
         android:name="com.harrycampaz.songsearch.song.ui.fragment.SongListFragment"
         android:label="fragment_song_list"
+        tools:layout="@layout/fragment_song_list" >
+        <action
+            android:id="@+id/action_songListFragment_to_songDetailDialogFragment"
+            app:destination="@id/songDetailDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/songDetailDialogFragment"
+        android:name="com.harrycampaz.songsearch.song.ui.fragment.SongDetailDialogFragment"
+        android:label="fragment_song_detail_dialog"
         tools:layout="@layout/fragment_song_list" />
 </navigation>

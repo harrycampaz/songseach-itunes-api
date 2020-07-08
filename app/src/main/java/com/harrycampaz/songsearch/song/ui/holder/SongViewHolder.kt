@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harrycampaz.songsearch.song.domain.model.Result
+import com.harrycampaz.songsearch.song.domain.model.SongListener
 import kotlinx.android.synthetic.main.item_song.view.*
 
 
@@ -14,13 +15,17 @@ class SongViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
     private val tvAccess = itemView.tv_access_id
 
 
-    fun bind(song: Result) {
-        tvSong.text = song.artistName
-        tvAccess.text = song.trackName
+    fun bind(song: Result, songListener: SongListener, position: Int) {
+        tvSong.text = song.trackName
+        tvAccess.text = song.artistName
 
         Glide.with(imageView.context)
             .load(song.artworkUrl100)
             .into(imageView)
+
+        itemView.setOnClickListener {
+            songListener.onSongClicked(song, position)
+        }
     }
 
 }

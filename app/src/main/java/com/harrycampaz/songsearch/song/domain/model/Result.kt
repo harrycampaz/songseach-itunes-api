@@ -1,41 +1,28 @@
 package com.harrycampaz.songsearch.song.domain.model
 
-data class Result (
+import java.io.Serializable
 
-    val artistId: Int,
-    val artistName: String,
-    val artistViewUrl: String,
-    val artworkUrl100: String,
-    val artworkUrl30: String,
-    val artworkUrl60: String,
-    val collectionCensoredName: String,
-    val collectionExplicitness: String,
-    val collectionHdPrice: Double,
-    val collectionId: Int,
-    val collectionName: String,
-    val collectionPrice: Double,
-    val collectionViewUrl: String,
-    val contentAdvisoryRating: String,
-    val country: String,
-    val currency: String,
-    val discCount: Int,
-    val discNumber: Int,
-    val isStreamable: Boolean,
-    val kind: String,
-    val longDescription: String,
-    val previewUrl: String,
-    val primaryGenreName: String,
-    val releaseDate: String,
-    val shortDescription: String,
-    val trackCensoredName: String,
-    val trackCount: Int,
-    val trackExplicitness: String,
-    val trackHdPrice: Double,
-    val trackId: Int,
-    val trackName: String,
-    val trackNumber: Int,
-    val trackPrice: Double,
-    val trackTimeMillis: Int,
-    val trackViewUrl: String,
-    val wrapperType: String
-)
+class Result: Serializable {
+    var artistId: Int =0
+    lateinit var artistName: String
+    lateinit var artistViewUrl: String
+    lateinit var artworkUrl100: String
+    var collectionId: Int = 0
+    var collectionName: String = ""
+    lateinit var collectionViewUrl: String
+     var discCount: Int =0
+     var discNumber: Int = 0
+    lateinit var longDescription: String
+    lateinit var previewUrl: String
+    lateinit var primaryGenreName: String
+    lateinit var releaseDate: String
+    lateinit var shortDescription: String
+    lateinit var trackCensoredName: String
+     var trackCount: Int = 0
+    lateinit var trackExplicitness: String
+     var trackHdPrice: Double = 0.0
+    var trackId: Long = 0
+     var trackName: String = ""
+     var trackViewUrl: String = ""
+     var wrapperType: String = ""
+}

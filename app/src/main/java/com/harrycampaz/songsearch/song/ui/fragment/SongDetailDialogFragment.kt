@@ -1,17 +1,19 @@
 package com.harrycampaz.songsearch.song.ui.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.harrycampaz.songsearch.R
 import com.harrycampaz.songsearch.song.domain.model.Result
@@ -21,6 +23,8 @@ private const val TAG = "SongDetailDialogFragmen"
 class SongDetailDialogFragment : DialogFragment() {
 
     var mediaPlayer: MediaPlayer? = null
+
+    var totalTime: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +50,9 @@ class SongDetailDialogFragment : DialogFragment() {
          mediaPlayer = MediaPlayer().apply {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
             setDataSource(song.previewUrl)
-            prepare() // might take long! (for buffering, etc)
+            prepare()
+
+             totalTime = duration
         }
 
         toolbar_song_dialog.setNavigationOnClickListener {
@@ -65,23 +71,95 @@ class SongDetailDialogFragment : DialogFragment() {
         tv_details_dialog_banda.text = song.artistName
 
         mediaPlayer?.let { media ->
-
-
-            iv_play.setOnClickListener {
+            btn_play.setOnClickListener {
 
                 if(media.isPlaying){
                     media.pause()
-                    iv_
+
+                    btn_play.setBackgroundResource(R.drawable.ic_baseline_play_circle_filled_24)
+
                 }else {
                     media.start()
+                    btn_play.setBackgroundResource(R.drawable.ic_baseline_pause_circle_filled_24)
                 }
 
             }
 
         }
 
+        seekBar.max = totalTime
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, from: Boolean) {
+                if(from){
+                    mediaPlayer?.seekTo(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+
+            }
+
+        })
+
+        Thread(Runnable {
+
+            while (mediaPlayer != null) {
+                mediaPlayer?.let {
+                    try {
+                        var msg = Message()
+                        msg.what = it.currentPosition
+                        handler.sendMessage(msg)
+
+                        Thread.sleep(1000)
+                    } catch (e: InterruptedException) {
+
+                    }
+                }
+            }
+
+        }).start()
 
     }
+
+    private var handler = @SuppressLint("HandlerLeak")
+    object : Handler() {
+
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if(seekBar != null) {
+                val currentPosition = msg.what
+                seekBar.progress = currentPosition
+
+                val elapsedTime = createTimeLabel(currentPosition)
+                elapsedTimeLb.text = elapsedTime
+
+                var remainingTime = createTimeLabel(totalTime - currentPosition)
+
+                remainingTimeLb.text = "- $remainingTime"
+            }
+
+        }
+    }
+
+
+    fun createTimeLabel(time: Int): String{
+
+        var timeLabel = ""
+        var min = time/ 1000 / 60
+        var sec = time / 1000 % 60
+
+        timeLabel = "$min: "
+        if(sec < 10) timeLabel += 0
+        timeLabel += sec
+
+        return  timeLabel
+    }
+
 
 
 

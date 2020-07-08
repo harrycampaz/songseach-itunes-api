@@ -11,14 +11,12 @@ import retrofit2.Response
 private const val TAG = "SongDataSource"
 class SongDataSource(var dataServices: DataServices, val query: String) : PageKeyedDataSource<Int, Result>() {
 
-   //  val dataServices: DataServices = RetrofitInstance.getDataService()
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Result>
     ) {
 
-      //  val dataServices: DataServices = RetrofitInstance.getDataService()
 
         val call: Call<Results> = dataServices.getSongs(term = query, limit = LIMIT)
 
@@ -63,7 +61,6 @@ class SongDataSource(var dataServices: DataServices, val query: String) : PageKe
                     items.let {
                         callback.onResult(items,  params.key + 20)
                     }
-                    // callback.onResult(response.body()!!.results, params.key + 20)
                 }
             }
 

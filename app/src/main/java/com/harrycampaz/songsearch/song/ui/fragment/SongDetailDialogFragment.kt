@@ -70,6 +70,11 @@ class SongDetailDialogFragment : DialogFragment() {
         }
         tv_details_dialog_banda.text = song.artistName
 
+       player()
+
+    }
+
+    fun player(){
         mediaPlayer?.let { media ->
             btn_play.setOnClickListener {
 
@@ -123,7 +128,6 @@ class SongDetailDialogFragment : DialogFragment() {
             }
 
         }).start()
-
     }
 
     private var handler = @SuppressLint("HandlerLeak")

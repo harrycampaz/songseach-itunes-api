@@ -1,7 +1,6 @@
 package com.harrycampaz.songsearch.song.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +9,13 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.harrycampaz.songsearch.R
 import com.harrycampaz.songsearch.song.domain.model.Result
 import com.harrycampaz.songsearch.song.domain.model.SongListener
 import com.harrycampaz.songsearch.song.domain.viewmodel.SongListViewModel
 import com.harrycampaz.songsearch.song.ui.adapter.SongAdapter
 import kotlinx.android.synthetic.main.fragment_song_list.*
-import kotlin.math.log
 
 private const val TAG = "SongListFragment"
 class SongListFragment : Fragment(), SongListener {
@@ -54,9 +50,9 @@ class SongListFragment : Fragment(), SongListener {
 
         songListViewModel = ViewModelProvider(this).get(SongListViewModel::class.java)
 
-        query?.let {
-            songListViewModel.refresh(it)
-        }
+
+        context?.let { songListViewModel.searchQuery(query, it) }
+
 
         songListViewModel.songsPageList.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

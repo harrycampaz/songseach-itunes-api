@@ -1,7 +1,9 @@
 package com.harrycampaz.songsearch.data.remote
 
+import android.content.Context
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
+import com.harrycampaz.songsearch.data.local.SongLocalData
 import com.harrycampaz.songsearch.song.domain.model.Results
 import com.harrycampaz.songsearch.song.domain.model.Result
 import retrofit2.Call
@@ -9,14 +11,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 private const val TAG = "SongDataSource"
-class SongDataSource(var dataServices: DataServices, val query: String) : PageKeyedDataSource<Int, Result>() {
+class SongDataSource(var dataServices: DataServices, val query: String, val context: Context) : PageKeyedDataSource<Int, Result>() {
 
+   private var songLocalData = SongLocalData(context)
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Result>
     ) {
-
 
         val call: Call<Results> = dataServices.getSongs(term = query, limit = LIMIT)
 
@@ -27,11 +29,14 @@ class SongDataSource(var dataServices: DataServices, val query: String) : PageKe
             override fun onResponse(call: Call<Results>, response: Response<Results>) {
                 if(response.isSuccessful) run {
 
-                    Log.d(TAG, "onResponse: ${response.body()}")
 
                     val apiResponse = response.body()!!
 
                     val items = apiResponse.results
+
+                    items.forEach {song ->
+                        songLocalData.addSong(song)
+                    }
 
                     items.let {
                         callback.onResult(items, null, LIMIT)
@@ -57,6 +62,9 @@ class SongDataSource(var dataServices: DataServices, val query: String) : PageKe
                     val apiResponse = response.body()!!
 
                     val items = apiResponse.results
+                    items.forEach {song ->
+                        songLocalData.addSong(song)
+                    }
 
                     items.let {
                         callback.onResult(items,  params.key + 20)

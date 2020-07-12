@@ -51,7 +51,9 @@ class SongListFragment : Fragment(), SongListener {
         songListViewModel = ViewModelProvider(this).get(SongListViewModel::class.java)
 
 
-        context?.let { songListViewModel.searchQuery(query, it) }
+        context?.let {
+            songListViewModel.setup(it)
+            songListViewModel.searchQuery(query) }
 
 
         songListViewModel.songsPageList.observe(viewLifecycleOwner, Observer {

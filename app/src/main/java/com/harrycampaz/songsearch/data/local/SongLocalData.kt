@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-private const val TAG = "SongLocalData"
 class SongLocalData(context: Context): CoroutineScope {
 
     var songDao: SongDao
@@ -26,7 +25,7 @@ class SongLocalData(context: Context): CoroutineScope {
 
 
     fun getSongs(query: String): DataSource.Factory<Int, Result>{
-        return  songDao.getSongs(query)
+        return  songDao.getSongs("%$query%")
     }
 
 
@@ -36,7 +35,6 @@ class SongLocalData(context: Context): CoroutineScope {
 
     private suspend fun setSong(song: Result){
         withContext(Dispatchers.IO){
-
             songDao.insert(song)
 
         }

@@ -13,6 +13,7 @@ class SongRepository(val context: Context) {
 
 
     fun getSongs(query: String): LivePagedListBuilder<Int, Result> {
+
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val isMetered: NetworkInfo? = cm.activeNetworkInfo
 

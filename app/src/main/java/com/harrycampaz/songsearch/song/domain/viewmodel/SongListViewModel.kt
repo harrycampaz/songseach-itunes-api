@@ -28,18 +28,17 @@ class SongListViewModel : ViewModel(){
             override fun onZeroItemsLoaded() {
                 super.onZeroItemsLoaded()
 
+           super.onZeroItemsLoaded()
+
                 isResultNotFound()
                 isProcessFinished()
-
             }
 
             override fun onItemAtFrontLoaded(itemAtFront: Result) {
                 super.onItemAtFrontLoaded(itemAtFront)
                 isProcessFinished()
             }
-        })
-            .build()
-
+        }).build()
     }
 
 

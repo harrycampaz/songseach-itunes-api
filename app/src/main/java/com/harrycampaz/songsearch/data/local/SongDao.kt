@@ -14,7 +14,7 @@ interface SongDao  {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(song: Result)
 
-    @Query("SELECT * FROM result_table where artistName LIKE  :name order by trackName")
+    @Query("SELECT * FROM result_table where artistName LIKE  :name OR trackName LIKE :name order by trackName")
     fun getSongs(name: String?): DataSource.Factory<Int, Result>
 
 
